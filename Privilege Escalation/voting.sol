@@ -1,0 +1,35 @@
+//SPDX-License-Identifier:MIT
+
+contract Vote {
+    struct Proposal {
+        uint160 sTime; address newOwner;
+    }
+    IERC20 votingToken;
+    address owner;
+    Proposal proposal;
+
+    function propose() external {
+        require (proposal.sTime == 0, "on-going proposal");
+        proposal = Proposal (block.timestamp, msg.sender);
+    }
+
+    function vote(uint amount) external {
+        require(proposal.Stime + 2 days > block.timestamp,
+        "voting has ended");
+        votingToken.transferFrom (
+            msg.sender, address(this), amount);
+    }
+
+    function end() external {
+        require(proposal.sTime !=0, "no proposal");
+        require(proposal.sTime + 2 days < block.timestamp,
+        "voting has not ended");
+        require(votingToken.balanceOf(address(this)) *2 >
+         votingToken.totalSupply(), "vote failed");
+         owner = proposal.newOwner;
+         delete proposal;
+    }
+    
+    function getLockedFunds() external onlyOwner {...}
+   
+}
